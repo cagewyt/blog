@@ -87,3 +87,46 @@ As languages mature, they tend to find better ways of doing things.
 
 Diamond problem
 a class that implements several interfaces that have the same default method implemented, has to implement this method itself. We are going to explain this with an example.
+
+
+Java 8's stream concept is often a better design and performance choice than many equivalent imperative approaches. It helps separate the "what to do" from "how
+to do".
+
+intermediate method
+Intermediate methods always return a stream and do not actually modify the stream, but create a new stream instead. The processing of a stream starts when the terminal operation starts and stops when the terminal method completes. 
+
+stream.sorted()
+.distinct()
+.filter()
+.map()
+.flatMap()     be useful when multiple streams need to be combined
+
+<R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)
+rectangleLists.stream()
+               .flatMap((list) -> list.stream())
+               .forEach(System.out::println);
+               
+Stream<T> stream3 = Stream.concat(stream1, stream2);
+
+terminal method
+Terminal methods may produce a result as the sum method did, or it can produce a side effect. After a terminal method has been executed, the stream is said to have been consumed. This means the stream cannot be used again.
+
+Methods such as findFirst are called short-circuiting methods. When they are used with an infinite stream, they will return a finite stream.
+
+Method                             Returns when
+anyMatch                           Any element matches
+allMatch                           All of the elements match. For an infinite stream, a limit-type method will restrict its length
+noneMatch                          None of the elements match
+findAny                            Finds any element that matches
+limit                              Restrict the number of elements
+subStream                          Creates a substream
+
+
+parallelStream
+There are several factors you need to take into consideration before making a stream parallel. We will not be able to address all of these issues, but will address many of them including:
+
+• Non-inference: During the processing of the stream, the stream's data source must not be modified.
+• Stateless operations: A lambda expression whose outcome might vary during its execution are called state full. This is potentially a problem, because as the stream's operations are executed, the results can differ each time it is executed. Instead, lambda expressions should be written to not use a state.
+• Side effects: A stream operation can affect other parts of a program. They should be avoided if possible.
+• Ordering: The ordering of elements produced by a parallel stream may be important. If so, care must be taken to address the ordering issue.
+
