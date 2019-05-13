@@ -130,3 +130,18 @@ There are several factors you need to take into consideration before making a st
 • Side effects: A stream operation can affect other parts of a program. They should be avoided if possible.
 • Ordering: The ordering of elements produced by a parallel stream may be important. If so, care must be taken to address the ordering issue.
 
+
+The Optional class is not serializable
+
+The Optional instances cannot be sorted using the Arrays class's sort method. If used, it throws a java.lang.ClassCastException. This is because an Optional instance cannot be cast to Comparable. However, an array of Optional values can be sorted manually
+
+The Optional instances should not be used as constructor or method parameters.
+
+public<U> Optional<U> map(Function<? super T, ? extends U> mapper);
+
+public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper);
+
+Monads
+A monad structure can be thought of as a chain of operations wrapped around an object. These operations are executed against an object and return some value. In this sense, monads support function composition.
+The chaining sequence allows programmers to create pipelines, a sequence of operations, to solve their problems. 
+
