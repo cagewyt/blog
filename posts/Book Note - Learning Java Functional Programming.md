@@ -5,7 +5,7 @@ The problem to solve is how to blend the various programming styles
 meet an application's need. 
 
 **Disclaimer**: 
-All the paragraphs/codes are direct copy from the book. 
+All the paragraphs/codes are direct copy from the [book](https://www.oreilly.com/library/view/learning-java-functional/9781783558483/). 
 This note captures the key points in the book I found particularly useful to myself. 
 Thank the author for creating such a good book on the functional programming in Java. 
 
@@ -337,3 +337,4 @@ Functional interfaces and default methods allowed us to reduce the amount of
 coding required to implement a solution. 
 However, functional interfaces can limit how problems can be addressed 
 since it supports a single abstract method.
+
