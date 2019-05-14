@@ -145,3 +145,109 @@ Monads
 A monad structure can be thought of as a chain of operations wrapped around an object. These operations are executed against an object and return some value. In this sense, monads support function composition.
 The chaining sequence allows programmers to create pipelines, a sequence of operations, to solve their problems. 
 
+
+# Design Pattern
+Overusing design patterns can make the system hard to understand when a simpler solution is obfuscated by a more complex pattern implementation. Design patterns are a good communication tool, but should not be treated as gospel. When the problem doesn't match the proposed pattern, don't use the pattern. Choose the right pattern for the right problem.
+
+Design patterns are often specific to a specific programming paradigm. Some design patterns support Java applications very well. However, many object-oriented design patterns are irrelevant to some functional programming languages. For example, the singleton pattern is not present in pure functional programming languages.
+
+## Execute-around-method pattern 
+(similar to AOP)
+
+```java
+private static int withLog(int value) {
+      System.out.print("Operation logged for " + value + " - ");
+      return value;
+}
+
+private static int executeWithLog(Function<Integer, Integer> consumer, int value) {
+      System.out.print("Operation logged for " + value + " - ");
+      return consumer.apply(value);
+}
+
+System.out.println(executeWithLog(x -> x * x, 5));
+```
+
+```java
+public int executeBefore(
+     Function<Integer, Integer> beforeFunction,
+     Function<Integer, Integer> function,
+     Integer value) {
+         beforeFunction.apply(value);
+         return function.apply(value);
+}
+
+public int executeAfter(
+        Function<Integer, Integer> function,
+        Function<Integer, Integer> afterFunction,
+        Integer value) {
+         int result =  function.apply(value);
+         afterFunction.apply(result);
+         return result;
+}
+```
+
+## Factory pattern
+
+```java
+Supplier<DirtVacuumCleaner> dvcSupplier =
+           DirtVacuumCleaner::new;
+       dvc = dvcSupplier.get();
+```
+
+## Command pattern
+The command pattern is useful for storing an arbitrary set of operations that can be executed at a later time. It has been used to support GUI action controls such as buttons and menus, recording macros, and supporting undo operations.
+It is a behavioral design pattern where an object encapsulates the information needed to perform an operation at a later time.
+
+```java
+public class FunctionalCommands {
+       private final List<Supplier<Boolean>> commands =
+           new ArrayList<>();
+       public void addCommand(Supplier<Boolean> action) {
+           commands.add(action);
+      }
+      public void executeCommand() {
+             commands.forEach(Supplier::get);
+      } 
+}
+
+Character character = new Character();
+FunctionalCommands fc = new FunctionalCommands();
+fc.addCommand(() -> character.walk());
+fc.addCommand(() -> character.run());
+fc.addCommand(() -> character.jump());
+fc.executeCommand();
+```
+
+## Strategy pattern
+The pattern does not use inheritance, but rather encapsulates the behavior in another class. This composition approach decouples the behavior from the classes that use the behavior. Changing the behavior does not affect the class that uses it.
+
+The SchedulingStrategy interface shown next will be implemented by the various scheduling algorithms. Each algorithm will use a different approach to select the next task to be performed. The nextTask method will return this task:
+we will use three different algorithms: first-come-first-serve, shortest-task-first, and longest-task-first. 
+
+```java
+@FunctionalInterface
+public interface SchedulingStrategy {
+  Task nextTask(List<Task> tasks);
+}
+
+Comparator<Task> comparator = (x,y) -> x.getDuration()-y.getDuration();
+SchedulingStrategy STFStrategy = t -> t.stream().min(comparator).get();
+
+SchedulingStrategy FCFSStrategy = t -> t.get(0);
+
+SchedulingStrategy LTFStrategy = t -> t.stream().max(comparator).get();
+```
+The functional programming solution eliminated the need for the three strategy classes and facilitated the implementation of simpler strategy algorithms.
+
+## Template pattern
+The template pattern is based around the idea that certain problems have structures that are reflected in a core method. This method uses the same set of operations to perform a task. This can be seen in a loading task where the basic steps to load a container is essentially the same whether the container is a box or a truck.
+
+
+Lambda expressions were used as an alternate means of expression functionality. Streams allowed us to combine operations. Functional interfaces and default methods allowed us to reduce the amount of coding required to implement a solution. However, functional interfaces can limit how problems can be addressed since it supports a single abstract method.
+
+
+# Testing Exceptions in Stream
+https://blog.codeleak.pl/2014/07/junit-testing-exception-with-java-8-and-lambda-expressions.html?spref=tw
+
+
